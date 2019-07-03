@@ -1,22 +1,3 @@
 ﻿{
-	"editors": [
-		{
-			"type": "form",
-			"id": 1,
-			"previousTabType": "method",
-			"previousTabID": 2147483645,
-			"formName": "test"
-		},
-		{
-			"type": "method",
-			"id": 2147483645,
-			"codeDescriptor": {
-				"type": 1,
-				"methodName": "generate_constants_xlf"
-			}
-		},
-		{
-			"type": "explorer"
-		}
-	]
+	"editors": []
 }
