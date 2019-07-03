@@ -1,0 +1,1 @@
+TOGGLE WINDOW TAB BAR (Frontmost window:C447)

@@ -1,0 +1,41 @@
+{
+    "name": "tab-ui",
+    "id": 20000,
+    "commands": [
+        {
+            "theme": "tab-ui",
+            "syntax": "TOGGLE WINDOW TAB OVERVIEW(&L)",
+            "threadSafe": true
+        },
+        {
+            "theme": "tab-ui",
+            "syntax": "Get window tab id(&L):T",
+            "threadSafe": true
+        },
+        {
+            "theme": "tab-ui",
+            "syntax": "SET WINDOW TAB ID(&L;&T;&L)",
+            "threadSafe": true
+        },
+        {
+            "theme": "tab-ui",
+            "syntax": "TOGGLE WINDOW TAB BAR(&L)",
+            "threadSafe": true
+        },
+        {
+            "theme": "tab-ui",
+            "syntax": "MERGE ALL WINDOWS(&L)",
+            "threadSafe": true
+        },
+        {
+            "theme": "tab-ui",
+            "syntax": "SELECT NEXT WINDOW TAB(&L)",
+            "threadSafe": true
+        },
+        {
+            "theme": "tab-ui",
+            "syntax": "SELECT PREVIOUS WINDOW TAB(&L)",
+            "threadSafe": true
+        }
+    ]
+}

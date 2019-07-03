@@ -1,0 +1,1 @@
+MERGE ALL WINDOWS (Frontmost window:C447)

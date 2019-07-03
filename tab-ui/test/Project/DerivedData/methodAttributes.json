@@ -1,0 +1,68 @@
+﻿{
+	"methods": {
+		"generate_file_from_template": {
+			"timeStamp": "2019-07-02T13:36:21.127Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
+		},
+		"generate_project_infoplist": {
+			"timeStamp": "2019-07-02T13:51:21.190Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
+		},
+		"generate_constants_xlf": {
+			"timeStamp": "2019-07-02T13:37:17.909Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
+		},
+		"generate_project_xcode": {
+			"timeStamp": "2019-07-02T13:57:13.196Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
+		},
+		"test": {
+			"timeStamp": "2019-07-02T22:41:52.952Z"
+		},
+		"generate_project": {
+			"timeStamp": "2019-07-02T14:18:29.023Z"
+		},
+		"generate_project_vs": {
+			"timeStamp": "2019-07-02T07:14:12.944Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
+		},
+		"generate_project_plugin_stub": {
+			"timeStamp": "2019-07-02T14:18:29.030Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
+		},
+		"generate_project_source": {
+			"timeStamp": "2019-07-02T14:36:13.407Z",
+			"attributes": {
+				"invisible": true,
+				"preemptive": "capable"
+			}
+		},
+		"(test_mkbitmap)": {
+			"timeStamp": "2019-07-01T05:19:15.143Z"
+		},
+		"(Method2)": {
+			"timeStamp": "2019-06-24T02:19:29.000Z"
+		},
+		"(test)": {
+			"timeStamp": "2019-07-01T05:17:36.552Z"
+		}
+	}
+}
