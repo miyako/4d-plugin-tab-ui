@@ -30,10 +30,10 @@
 		"height": 787
 	},
 	"Sources/Methods/generate_constants_xlf.4dm": {
-		"left": 500,
-		"top": 130,
+		"left": 181,
+		"top": 318,
 		"width": 720,
-		"height": 399
+		"height": 374
 	},
 	"Sources/Methods/generate_project_vs.4dm": {
 		"left": 190,
@@ -72,10 +72,10 @@
 		"height": 762
 	},
 	"Sources/Methods/test.4dm": {
-		"left": 500,
-		"top": 130,
+		"left": 181,
+		"top": 319,
 		"width": 720,
-		"height": 399
+		"height": 374
 	},
 	"Sources/Forms/フォーム1/ObjectMethods/ボタン.4dm": {
 		"left": 490,

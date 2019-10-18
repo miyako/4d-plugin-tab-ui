@@ -1,3 +1,9 @@
 ﻿{
-	"editors": []
+	"editors": [
+		{
+			"type": "form",
+			"id": 1,
+			"formName": "test"
+		}
+	]
 }
