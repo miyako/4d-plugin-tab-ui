@@ -1,22 +1,12 @@
-# Builds the plugin for Windows (x64) first, then macOS as a universal
-# (arm64 + x86_64) binary, merges both into the single cross-platform
-# .bundle, codesigns + notarizes the mac binary, and publishes a GitHub
-# Release with the zip and dmg attached.
+# Builds the macOS universal (arm64 + x86_64) plugin, signs and notarizes,
+# then publishes a create-only GitHub Release with zip and dmg assets.
 #
-# Trigger: push a tag matching v*.*.* (either by hand, or via bump-version.yml).
-# You can also run it manually against an existing tag with workflow_dispatch.
+# Run manually on the selected immutable commit; source metadata owns the version.
 
-name: Build & Release
+name: Build
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
   workflow_dispatch:
-    inputs:
-      tag:
-        description: Existing tag to build (e.g. v2.3.0)
-        required: true
 
 permissions:
   contents: write
@@ -25,12 +15,11 @@ env:
   # ---- edit these per-project, everything else is generic ----
   PRODUCT_NAME: tab-ui
   XCODE_PROJECT: tab-ui.xcodeproj
-  VCX_SOLUTION: tab-ui.sln
   MACOS_DEPLOYMENT_TARGET: '11.0'
   # --------------------------------------------------------------
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-publication
   cancel-in-progress: false
 
 jobs:
@@ -41,11 +30,17 @@ jobs:
       tag: ${{ steps.set.outputs.tag }}
       version: ${{ steps.set.outputs.version }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
       - id: set
+        name: validate source version and publication availability
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SELECTED_SHA: ${{ github.sha }}
         run: |
-          TAG="${{ inputs.tag || github.ref_name }}"
-          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
-          echo "version=${TAG#v}" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+          python3 .github/scripts/release.py preflight --sha "$SELECTED_SHA"
 
   build-macos:
     name: Build macOS, package, sign, notarize & release
@@ -54,7 +49,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ needs.version.outputs.tag }}
+          ref: ${{ github.sha }}
 
       - name: import Developer ID certificate
         env:
@@ -125,7 +120,7 @@ jobs:
           ZIP_PATH="${{ env.PRODUCT_NAME }}-${VERSION}.zip"
           DMG_PATH="${{ env.PRODUCT_NAME }}-${VERSION}.dmg"
 
-          # zip: cross-platform bundle (win + mac binaries together), what most users grab
+          # zip: macOS plugin bundle
           ditto -c -k --keepParent "$BUNDLE_PATH" "$ZIP_PATH"
 
           # dmg: mac-friendly, and the only format Apple lets us staple a ticket to
@@ -138,11 +133,10 @@ jobs:
           echo "ZIP_PATH=$ZIP_PATH" >> "$GITHUB_ENV"
           echo "DMG_PATH=$DMG_PATH" >> "$GITHUB_ENV"
 
-      - name: create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ needs.version.outputs.tag }}
-          name: ${{ needs.version.outputs.tag }}
-          files: |
-            ${{ env.ZIP_PATH }}
-            ${{ env.DMG_PATH }}
+      - name: recheck availability and create tag, release and assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SELECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/release.py publish --sha "$SELECTED_SHA" "$ZIP_PATH" "$DMG_PATH"
