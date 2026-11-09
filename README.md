@@ -48,6 +48,74 @@ Sierra).
   window operation to finish before returning, since one of them needs to hand back a real
   result.
 
+## Maintainer release workflow
+
+Both Actions workflows are manual and independent. **Bump version** accepts `patch`,
+`minor`, or `major`; explicitly select the branch in Actions' **Use workflow from**
+selector. It checks out the immutable dispatch SHA, validates clean source metadata
+and that exact remote branch tip, commits only source version metadata, then pushes
+only that branch non-forcibly with tag following disabled. An executable pre-push
+guard checks the receive-pack advertised old SHA against the dispatch SHA, including
+late advances, ancestor rewinds, deletions and same-result races. A missing guard
+fails closed. No tag is created and no Build is triggered.
+
+Run **Build** separately on the desired commit using the workflow selector. It has
+no inputs, and every checkout uses `github.sha`, not a moving branch or typed tag.
+It derives strict `X.Y.Z` from source, checks remote tags and authenticated,
+paginated releases (including drafts), then runs the existing macOS universal
+build, architecture check, signing verification, ZIP/DMG notarization and DMG
+stapling. There is no Windows build job; old cross-platform workflow comments
+did not describe this repository's actual pipeline. Native dependencies remain
+the bundled 4D Plugin API/support sources and Cocoa/system frameworks; no new
+external dependencies or supported platforms are introduced.
+
+The source authority is `MARKETING_VERSION` in all six configurations of
+`tab-ui.xcodeproj/project.pbxproj`, coordinated with `CURRENT_PROJECT_VERSION`,
+`Info.plist` and the English localized version strings. Both project counters
+started at `1.0.0`; the old generic bump header promised both, but its implementation
+only updated marketing metadata. This migration repairs the stale current-project
+`1.0.0` and localized `1.2` values to the existing `1.0.5` authority, **without a
+release-version increment**. Valid Xcode version references are retained;
+absent `CFBundleVersion` stays absent. Prebuilt bundles under `test/Plugins`,
+manifest/4D/schema/dependency versions and unrelated project metadata are not
+version sources and are not rewritten.
+
+Publication has one repository-wide concurrency group across branches. Immediately
+after all build/sign/notary/staple gates, it repeats the full availability check.
+Only a complete successful no-match scan means absent; authentication, 404,
+network, malformed or later-page failures stop publication. It creates a new
+`vX.Y.Z` tag via create-only Git refs POST at the exact selected SHA and verifies
+the remote SHA. Same-SHA tag creation races are errors too. It then POSTs a new,
+non-draft, non-prerelease release with an empty body (no generated notes), and
+POSTs `tab-ui-X.Y.Z.zip` and `tab-ui-X.Y.Z.dmg` to that newly returned release ID.
+No existing tag, release or asset is updated, overwritten, deleted or retried.
+
+**Recovery:** A failure may leave only the tag, a published release with no assets,
+or a release with some assets. The error stops the run and retains all partial
+state; rerunning the same version will fail the availability check, not repair it.
+Inspect the run's selected SHA, remote tag SHA, draft/published releases and assets
+manually before deciding on recovery. Coordinate any manual remediation outside
+these workflows, or use Bump version and manually Build a new version. Do not
+assume a failed request had no server-side effect. The currently committed source
+version may already be released and is deliberately not advanced by this migration.
+
+The existing Xcode target also contains an unconditional legacy signing/altool
+shell phase (`D1292E7B22C4A91E00CB5A8C`); the baseline workflow did not disable it.
+It is preserved, not silently skipped or modernized here. Native execution and
+credentials for that legacy phase must be assessed separately; this migration
+does not establish that it works on current runners.
+
+Local lifecycle checks (no native build, credentials or GitHub mutation):
+
+```sh
+python3 -m unittest discover -s .github/tests -v
+actionlint .github/workflows/*.yml
+```
+
+The scripts and guard adapt the reviewed structure-access, kotoeri-option and
+script lifecycle implementations to this repository's paths, six configurations,
+localized metadata and macOS-only job graph.
+
 ---
 
 ## TOGGLE WINDOW TAB OVERVIEW
