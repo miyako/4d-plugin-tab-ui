@@ -1,0 +1,25 @@
+name: Ownership regression
+
+on:
+  push:
+    branches: [master, miyako-tab-ui-ownership]
+    paths:
+      - '4D Plugin API/**'
+      - '4DPlugin-tab-ui.*'
+      - 'support/**'
+      - '.github/tests/ownership*'
+      - '.github/tests/test_ownership.py'
+      - '.github/workflows/ownership.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  ownership:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - name: Unsigned synthetic host ASan and UBSan
+        run: python3 .github/tests/test_ownership.py

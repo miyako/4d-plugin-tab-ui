@@ -50,7 +50,14 @@ Sierra).
 
 ## Maintainer release workflow
 
-Both Actions workflows are manual and independent. **Bump version** accepts `patch`,
+An isolated unsigned [ownership regression](.github/tests/ownership-audit.md)
+compiles the full bundled SDK, JSON helpers and actual command dispatcher
+against synthetic window/thread/queue boundaries. Run
+`python3 .github/tests/test_ownership.py` on macOS; it never creates real UI
+or builds the release project. Its path-filtered push workflow is separate
+from the manual release workflows below.
+
+The release Actions workflows are manual and independent. **Bump version** accepts `patch`,
 `minor`, or `major`; explicitly select the branch in Actions' **Use workflow from**
 selector. It checks out the immutable dispatch SHA, validates clean source metadata
 and that exact remote branch tip, commits only source version metadata, then pushes
